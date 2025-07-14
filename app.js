@@ -122,7 +122,7 @@ app.post('/api/customer', (req, res) => {
     }
     
     // Check if customer exists
-    const checkQuery = 'SELECT * FROM customer WHERE email = ?';
+    const checkQuery = 'SELECT * FROM Customer WHERE email = ?';
     db.query(checkQuery, [email], (err, results) => {
         if (err) {
             console.error('Database error:', err);
@@ -134,7 +134,7 @@ app.post('/api/customer', (req, res) => {
             return res.json({ customerId: results[0].cu_id });
         } else {
             // Create new customer (using AUTO_INCREMENT)
-            const insertQuery = 'INSERT INTO customer (name, email) VALUES (?, ?)';
+            const insertQuery = 'INSERT INTO Customer (name, email) VALUES (?, ?)';
             db.query(insertQuery, [name, email], (err, insertResults) => {
                 if (err) {
                     console.error('Database error:', err);
@@ -145,7 +145,7 @@ app.post('/api/customer', (req, res) => {
                 
                 // Insert phone number if provided
                 if (phone) {
-                    const phoneQuery = 'INSERT INTO customer_ph (cu_id, phone_no) VALUES (?, ?)';
+                    const phoneQuery = 'INSERT INTO Customer_ph (cu_id, phone_no) VALUES (?, ?)';
                     db.query(phoneQuery, [newId, phone], (phoneErr) => {
                         if (phoneErr) {
                             console.error('Error saving phone number:', phoneErr);
@@ -268,7 +268,7 @@ app.get('/api/admin/product-feedbacks', checkAdmin, (req, res) => {
         SELECT pr.*, p.prod_name, c.name as customer_name 
         FROM product_rat pr
         JOIN product p ON pr.prod_id = p.prod_id
-        LEFT JOIN customer c ON pr.cu_id = c.cu_id
+        LEFT JOIN Customer c ON pr.cu_id = c.cu_id
         ORDER BY pr.created_date DESC
     `;
     
@@ -286,7 +286,7 @@ app.get('/api/admin/service-feedbacks', checkAdmin, (req, res) => {
         SELECT sr.*, s.s_type, c.name as customer_name 
         FROM service_rat sr
         JOIN service s ON sr.s_id = s.s_id
-        LEFT JOIN customer c ON sr.cu_id = c.cu_id
+        LEFT JOIN Customer c ON sr.cu_id = c.cu_id
         ORDER BY sr.created_date DESC
     `;
     
