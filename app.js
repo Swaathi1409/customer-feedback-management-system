@@ -7,13 +7,24 @@ const session = require('express-session');
 const app = express();
 const port = process.env.PORT || 3003;
 const API_BASE_URL = process.env.API_BASE_URL || `http://localhost:${port}`;
+
 const cors = require('cors');
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS configuration for production
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' 
-        ? [process.env.FRONTEND_URL || 'https://cfms-frontend-afo0.onrender.com'] 
-        : ['http://127.0.0.1:5500', 'http://localhost:5500', 'http://localhost:3000'],
+    origin: process.env.NODE_ENV === 'production'
+        ? [process.env.FRONTEND_URL || 'https://cfms-frontend-afo0.onrender.com']
+        : [
+            'http://127.0.0.1:5500',
+            'http://localhost:5500',
+            'http://localhost:3000',
+            'http://127.0.0.1:5501',
+            'http://localhost:5501',
+            'https://cfms-frontend-afo0.onrender.com'
+        ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 };
@@ -54,7 +65,6 @@ db.connect((err) => {
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'cfms_secret_key',
     resave: false,
